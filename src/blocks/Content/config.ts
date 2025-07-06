@@ -5,7 +5,9 @@ import {
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  UploadFeature
 } from '@payloadcms/richtext-lexical'
+import { Media } from '../../collections/Media'
 
 import { link } from '@/fields/link'
 
@@ -37,14 +39,17 @@ const columnFields: Field[] = [
     name: 'richText',
     type: 'richText',
     editor: lexicalEditor({
-      features: ({ rootFeatures }) => {
-        return [
-          ...rootFeatures,
-          HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
-          FixedToolbarFeature(),
-          InlineToolbarFeature(),
-        ]
-      },
+      features: ({ rootFeatures }) => [
+        ...rootFeatures,
+        HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+        FixedToolbarFeature(),
+        InlineToolbarFeature(),
+        UploadFeature({
+          collections: {
+            media: Media,
+          },
+        }),
+      ],
     }),
     label: false,
   },

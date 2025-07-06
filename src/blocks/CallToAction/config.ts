@@ -29,7 +29,7 @@ export const CallToAction: Block = {
       label: false,
     },
     linkGroup({
-      appearances: ['default', 'outline'],
+      appearances: ['default', 'outline', 'asukamethod'],
       overrides: {
         maxRows: 2,
       },

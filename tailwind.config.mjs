@@ -89,6 +89,11 @@ const config = {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
         },
+        asukamethod: {
+          DEFAULT: '#270C37',
+          foreground: '#FFFFFF',
+          hover: '#c985de',
+        },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',

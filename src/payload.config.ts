@@ -16,6 +16,8 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { OnlineClasses } from './collections/OnlineClasses'
+import { Bookings } from './collections/Bookings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -61,7 +63,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Media, Categories, Users, OnlineClasses, Bookings],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
@@ -69,7 +71,7 @@ export default buildConfig({
     // storage-adapter-placeholder
   ],
   secret: process.env.PAYLOAD_SECRET,
-  sharp,
+  sharp, // If you would like Payload to offer cropping, focal point selection, and automatic media resizing, install and pass the Sharp module to the config here.
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
@@ -88,4 +90,5 @@ export default buildConfig({
     },
     tasks: [],
   },
+  telemetry: false
 })

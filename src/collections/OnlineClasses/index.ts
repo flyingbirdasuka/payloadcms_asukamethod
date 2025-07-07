@@ -1,15 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
-import { authenticated } from '../../access/authenticated'
-
 export const OnlineClasses: CollectionConfig = {
   slug: 'online-classes',
   access: {
-    // admin: authenticated,
-    // create: authenticated,
-    // delete: authenticated,
-    // read: authenticated,
-    // update: authenticated,
     read: () => true,
   },
   admin: {

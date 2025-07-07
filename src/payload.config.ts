@@ -18,6 +18,8 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { OnlineClasses } from './collections/OnlineClasses'
 import { Bookings } from './collections/Bookings'
+import { Videos } from './collections/Videos'
+import { Tags } from './collections/Tags'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -63,7 +65,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, OnlineClasses, Bookings],
+  collections: [Pages, Posts, Media, Categories, Users, OnlineClasses, Bookings, Videos, Tags],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

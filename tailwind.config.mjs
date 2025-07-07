@@ -90,9 +90,9 @@ const config = {
           foreground: 'hsl(var(--secondary-foreground))',
         },
         asukamethod: {
-          DEFAULT: '#270C37',
-          foreground: '#FFFFFF',
-          hover: '#c985de',
+          DEFAULT: 'hsl(var(--asukamethod))',
+          foreground: 'hsl(var(--asukamethod-foreground))',
+          hover: 'hsl(var(--asukamethod-hover))',
         },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',

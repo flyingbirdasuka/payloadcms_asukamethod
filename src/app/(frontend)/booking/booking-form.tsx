@@ -147,7 +147,7 @@ export const BookingForm = () => {
         />
       </div>
 
-      <Button type="submit">Book Now</Button>
+      <Button type="submit" className="bg-asukamethod text-asukamethod-foreground hover:bg-asukamethod-hover">Book Now</Button>
     </form>
   )
 }

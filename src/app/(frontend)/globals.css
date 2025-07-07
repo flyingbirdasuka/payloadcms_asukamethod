@@ -101,3 +101,10 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+
+:root {
+  --asukamethod: 280 62% 13%;
+  --asukamethod-foreground: 0 0% 100%;
+  --asukamethod-hover: 280 65% 35%;
+}

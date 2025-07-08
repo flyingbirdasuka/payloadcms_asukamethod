@@ -1670,6 +1670,7 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
+  logo: number | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1699,6 +1700,7 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  logo: number | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1721,6 +1723,7 @@ export interface HeaderSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  logo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1744,6 +1747,7 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  logo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

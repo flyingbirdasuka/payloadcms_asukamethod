@@ -20,7 +20,7 @@ export const submitBooking: CollectionAfterChangeHook = async ({ doc, req }) => 
         selectedDates: filteredClasses,
       };
 
-      const res = await fetch('https://automation.asukamethod.com/webhook-test/b6ca52ca-b61c-4155-9714-f9977a576c0d', {
+      const res = await fetch(`${process.env.WEBHOOK_AUTOMATION_PAYMENT}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(webhookPayload),

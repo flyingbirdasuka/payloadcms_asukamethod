@@ -7,6 +7,10 @@ export const Bookings: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
+  access: {
+    read: () => true,
+    create:()=> true
+  },
   fields: [
     {
       name: 'name',

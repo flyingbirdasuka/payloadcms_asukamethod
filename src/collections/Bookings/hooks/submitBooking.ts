@@ -19,7 +19,6 @@ export const submitBooking: CollectionAfterChangeHook = async ({ doc, req }) => 
         ...doc,
         selectedDates: filteredClasses,
       };
-
       const res = await fetch(`${process.env.WEBHOOK_AUTOMATION_PAYMENT}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

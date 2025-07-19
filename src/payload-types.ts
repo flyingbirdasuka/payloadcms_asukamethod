@@ -382,6 +382,7 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
+  role: 'admin' | 'user';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -756,6 +757,7 @@ export interface Booking {
   email: string;
   selectedDates: (number | OnlineClass)[];
   paymentMethod: string;
+  status: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1337,6 +1339,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1366,6 +1369,7 @@ export interface BookingsSelect<T extends boolean = true> {
   email?: T;
   selectedDates?: T;
   paymentMethod?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

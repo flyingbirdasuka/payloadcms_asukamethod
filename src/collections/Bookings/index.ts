@@ -9,7 +9,8 @@ export const Bookings: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create:()=> true
+    create:()=> true,
+    update: ({ req }) => req.user?.role === 'admin',
   },
   fields: [
     {
@@ -34,6 +35,12 @@ export const Bookings: CollectionConfig = {
       type: 'text',
       required: true
     },
+    {
+      name: 'status',
+      type: 'text',
+      required: true,
+      defaultValue: 'pending',
+    }
   ],
   hooks: {
     afterChange: [submitBooking],

@@ -61,78 +61,79 @@ export const BookingForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mb-6">
-      <div>
-        <label>Choose class date(s)</label>
-        <DayPicker
-          mode="multiple"
-          selected={selectedDays}
-          onSelect={(days) => {
-            if (!days) return
-            const newSelected = Array.isArray(days) ? days : [days]
-            setSelectedDays(newSelected)
+      <div className='flex justify-evenly'>
+        <div>
+          <label>Choose class date(s)</label>
+          <DayPicker
+            mode="multiple"
+            selected={selectedDays}
+            onSelect={(days) => {
+              if (!days) return
+              const newSelected = Array.isArray(days) ? days : [days]
+              setSelectedDays(newSelected)
 
-            // Clear previously selected class times that no longer match selected days
-            const validClassIds = classes
-              .filter(cls =>
-                newSelected.some(day =>
-                  isSameDay(parseISO(cls.date), day)
+              // Clear previously selected class times that no longer match selected days
+              const validClassIds = classes
+                .filter(cls =>
+                  newSelected.some(day =>
+                    isSameDay(parseISO(cls.date), day)
+                  )
                 )
-              )
-              .map(c => c.id)
-            const filteredSelected = selectedClassIds.filter(id => validClassIds.includes(id))
-            setValue('selectedDates', filteredSelected)
-          }}
-          disabled={(date) =>
-            !classes.some(cls => isSameDay(parseISO(cls.date), date))
-          }
-        />
-      </div>
-
-      {selectedDays.length > 0 && (
-        <div className="space-y-4">
-          {selectedDays.slice() // clone array so we don't mutate state
-            .sort((a, b) => a.getTime() - b.getTime()) // sort ascending by date
-            .map((day) => {
-            const dayClasses = classes.filter(cls =>
-              isSameDay(parseISO(cls.date), day)
-            )
-
-            if (dayClasses.length === 0) return null
-            console.log(dayClasses)
-            return (
-              <div key={day.toISOString()}>
-                <h3 className="font-semibold">
-                  {format(day, 'PPPP')}:
-                </h3>
-                <ul className="space-y-1 ml-4">
-                {dayClasses
-                .sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime())
-                .map((cls) => (
-                  <li key={cls.id}>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        value={cls.id}
-                        checked={selectedClassIds.includes(cls.id)}
-                        onChange={(e) => {
-                          const newIds = e.target.checked
-                            ? [...selectedClassIds, cls.id]
-                            : selectedClassIds.filter((id) => id !== cls.id)
-                          setValue('selectedDates', newIds)
-                        }}
-                      />
-                      {format(parseISO(cls.date), 'HH:mm')} —{' '}
-                      {cls.classTitle?.trim() || <span className="italic text-gray-500">Untitled Class</span>}
-                    </label>
-                  </li>
-                ))}
-                </ul>
-              </div>
-            )
-          })}
+                .map(c => c.id)
+              const filteredSelected = selectedClassIds.filter(id => validClassIds.includes(id))
+              setValue('selectedDates', filteredSelected)
+            }}
+            disabled={(date) =>
+              !classes.some(cls => isSameDay(parseISO(cls.date), date))
+            }
+          />
         </div>
-      )}
 
+        {selectedDays.length > 0 && (
+          <div className="space-y-4">
+            {selectedDays.slice() // clone array so we don't mutate state
+              .sort((a, b) => a.getTime() - b.getTime()) // sort ascending by date
+              .map((day) => {
+              const dayClasses = classes.filter(cls =>
+                isSameDay(parseISO(cls.date), day)
+              )
+
+              if (dayClasses.length === 0) return null
+              console.log(dayClasses)
+              return (
+                <div key={day.toISOString()}>
+                  <h3 className="font-semibold">
+                    {format(day, 'PPPP')}:
+                  </h3>
+                  <ul className="space-y-1 ml-4">
+                  {dayClasses
+                  .sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime())
+                  .map((cls) => (
+                    <li key={cls.id}>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          value={cls.id}
+                          checked={selectedClassIds.includes(cls.id)}
+                          onChange={(e) => {
+                            const newIds = e.target.checked
+                              ? [...selectedClassIds, cls.id]
+                              : selectedClassIds.filter((id) => id !== cls.id)
+                            setValue('selectedDates', newIds)
+                          }}
+                        />
+                        {format(parseISO(cls.date), 'HH:mm')} —{' '}
+                        {cls.classTitle?.trim() || <span className="italic text-gray-500">Untitled Class</span>}
+                      </label>
+                    </li>
+                  ))}
+                  </ul>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
       <div>
         <label>Name</label>
         <Input {...register('name', { required: true })} />

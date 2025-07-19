@@ -46,7 +46,7 @@ const columnFields: Field[] = [
         InlineToolbarFeature(),
         UploadFeature({
           collections: {
-            media: Media,
+            uploads: Media,
           },
         }),
       ],

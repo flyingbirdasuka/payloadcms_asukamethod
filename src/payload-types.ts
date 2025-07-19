@@ -744,6 +744,7 @@ export interface OnlineClass {
   id: number;
   date: string;
   classTitle: string;
+  teamsMeetingLink?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1357,6 +1358,7 @@ export interface UsersSelect<T extends boolean = true> {
 export interface OnlineClassesSelect<T extends boolean = true> {
   date?: T;
   classTitle?: T;
+  teamsMeetingLink?: T;
   updatedAt?: T;
   createdAt?: T;
 }

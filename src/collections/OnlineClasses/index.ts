@@ -26,6 +26,11 @@ export const OnlineClasses: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'teamsMeetingLink',
+      type: 'text',
+      label: 'Teams Meeting Link',
+    }
   ],
   hooks: {
     afterChange: [createMeeting],

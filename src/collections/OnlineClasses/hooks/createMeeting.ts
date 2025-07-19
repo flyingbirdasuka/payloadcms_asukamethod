@@ -29,13 +29,17 @@ const getAccessToken = async (): Promise<string> => {
 
 export const createMeeting: CollectionAfterChangeHook = async ({ doc, req }) => {
     console.log('create meeting hook triggered', doc);
+    if (doc.teamsMeetingLink) {
+        console.log('Teams meeting link already exists. Skipping creation.');
+        return;
+    }
 
- //  Get the access token
+    //  Get the access token
     const accessToken = await getAccessToken();
 
-    console.log('✅ Access token received:', accessToken);
+    console.log('Access token received:', accessToken);
 
-  //  Create a Teams Meeting
+    //  Create a Teams Meeting
     const start = new Date(doc.date);
     const end = new Date(start.getTime() + 90 * 60 * 1000); // +1.5 hour
 
@@ -72,5 +76,15 @@ export const createMeeting: CollectionAfterChangeHook = async ({ doc, req }) => 
       const eventData = await eventRes.json();
       const teamsMeetingLink = eventData.onlineMeeting?.joinUrl;
       
-      console.log('✅ Calendar event with Teams meeting created:', teamsMeetingLink);
+      console.log('Calendar event with Teams meeting created:', teamsMeetingLink);
+
+      // Update the current doc with the meeting link field (e.g., 'teamsMeetingLink')
+      await req.payload.update({
+        collection: 'online-classes',
+        id: doc.id,
+        data: {
+        teamsMeetingLink: teamsMeetingLink,
+        },
+        req,
+    });
 }

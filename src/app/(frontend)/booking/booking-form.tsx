@@ -6,7 +6,7 @@ import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { format, parseISO } from 'date-fns'
+import { format, parseISO, isSameDay } from 'date-fns'
 import { getClientSideURL } from '@/utilities/getURL'
 
 type BookingFormInputs = {
@@ -19,12 +19,13 @@ type BookingFormInputs = {
 type OnlineClass = {
   id: string
   date: string
-  title?: string
+  classTitle?: string
 }
 
 export const BookingForm = () => {
-  const { handleSubmit, control, register, setValue } = useForm<BookingFormInputs>()
+  const { handleSubmit, control, register, setValue, watch } = useForm<BookingFormInputs>()
   const [classes, setClasses] = useState<OnlineClass[]>([])
+  const [selectedDays, setSelectedDays] = useState<Date[]>([])
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -36,6 +37,7 @@ export const BookingForm = () => {
     fetchClasses()
   }, [])
 
+
   const onSubmit = async (data: BookingFormInputs) => {
 
     await fetch(`${getClientSideURL()}/api/bookings`, {
@@ -46,81 +48,91 @@ export const BookingForm = () => {
       },
     })
     console.log("submitted", data)
-  }
+  }  
+  
+  // classes per selected day
+  const classOptionsForSelectedDays = selectedDays.flatMap((day) =>
+    classes.filter((cls) =>
+      isSameDay(parseISO(cls.date), day)
+    )
+  )
 
-  // Extract available dates as actual JS Date objects
-  const availableDates = classes.map((cls) => ({
-    ...cls,
-    dateObj: parseISO(cls.date),
-  }))
+  const selectedClassIds = watch('selectedDates') || []
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mb-6">
       <div>
-        <label>Choose a class date</label>
-        <Controller
-          control={control}
-          name="selectedDates"
-          rules={{ required: true }}
-          render={({ field }) => {
-            const selectedDates = classes
-              .filter((cls) => field.value?.includes(cls.id))
-              .map((cls) => parseISO(cls.date))
+        <label>Choose class date(s)</label>
+        <DayPicker
+          mode="multiple"
+          selected={selectedDays}
+          onSelect={(days) => {
+            if (!days) return
+            const newSelected = Array.isArray(days) ? days : [days]
+            setSelectedDays(newSelected)
 
-            return (
-              <div className='flex justify-evenly'>
-                <DayPicker
-                  className='my-custom-picker'
-                  mode="multiple"
-                  selected={selectedDates}
-                  onSelect={(dates) => {
-                    if (!dates || !Array.isArray(dates)) return
-                  
-                    // Match selected dates with available classes
-                    const selectedClasses = classes.filter((cls) =>
-                      dates.some(
-                        (d) => parseISO(cls.date).toDateString() === d.toDateString()
-                      )
-                    )
-                  
-                    // Sort classes by their date
-                    const sortedClassIds = selectedClasses
-                      .sort(
-                        (a, b) =>
-                          parseISO(a.date).getTime() - parseISO(b.date).getTime()
-                      )
-                      .map((cls) => cls.id)
-                  
-                    field.onChange(sortedClassIds)
-                  }}
-
-                  disabled={(date) =>
-                    !classes.some(
-                      (cls) =>
-                        parseISO(cls.date).toDateString() === date.toDateString()
-                    )
-                  }
-                />
-
-                    {/*  Show Selected Dates */}
-                    {field.value?.length > 0 && (
-                      <div className="mt-2 text-sm text-gray-700 space-y-1">
-                        <b>Selected Dates:</b>
-                        <ul className="list-disc list-inside">
-                        {field.value.map((id) => {
-                          const cls = classes.find((c) => c.id === id)
-                          return cls ? (
-                            <li key={cls.id}><b>{format(parseISO(cls.date), 'PPP')}</b></li>
-                          ) : null
-                        })}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+            // Clear previously selected class times that no longer match selected days
+            const validClassIds = classes
+              .filter(cls =>
+                newSelected.some(day =>
+                  isSameDay(parseISO(cls.date), day)
                 )
-              }}
-            />
+              )
+              .map(c => c.id)
+            const filteredSelected = selectedClassIds.filter(id => validClassIds.includes(id))
+            setValue('selectedDates', filteredSelected)
+          }}
+          disabled={(date) =>
+            !classes.some(cls => isSameDay(parseISO(cls.date), date))
+          }
+        />
       </div>
+
+      {selectedDays.length > 0 && (
+        <div className="space-y-4">
+          {selectedDays.slice() // clone array so we don't mutate state
+            .sort((a, b) => a.getTime() - b.getTime()) // sort ascending by date
+            .map((day) => {
+            const dayClasses = classes.filter(cls =>
+              isSameDay(parseISO(cls.date), day)
+            )
+
+            if (dayClasses.length === 0) return null
+            console.log(dayClasses)
+            return (
+              <div key={day.toISOString()}>
+                <h3 className="font-semibold">
+                  {format(day, 'PPPP')}:
+                </h3>
+                <ul className="space-y-1 ml-4">
+                {dayClasses
+                .sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime())
+                .map((cls) => (
+                  <li key={cls.id}>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        value={cls.id}
+                        checked={selectedClassIds.includes(cls.id)}
+                        onChange={(e) => {
+                          const newIds = e.target.checked
+                            ? [...selectedClassIds, cls.id]
+                            : selectedClassIds.filter((id) => id !== cls.id)
+                          setValue('selectedDates', newIds)
+                        }}
+                      />
+                      {format(parseISO(cls.date), 'HH:mm')} —{' '}
+                      {cls.classTitle?.trim() || <span className="italic text-gray-500">Untitled Class</span>}
+                    </label>
+                  </li>
+                ))}
+                </ul>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       <div>
         <label>Name</label>
         <Input {...register('name', { required: true })} />
@@ -130,6 +142,7 @@ export const BookingForm = () => {
         <label>Email</label>
         <Input {...register('email', { required: true })} type="email" />
       </div>
+
       <div>
         <label>Payment Method</label>
         <Controller
@@ -139,14 +152,19 @@ export const BookingForm = () => {
           render={({ field }) => (
             <select {...field} className="w-full border rounded p-2">
               <option value="">Select payment</option>
-              <option value="stripe">Credit Card/iDeal</option>
+              <option value="stripe">Credit Card / iDeal</option>
               <option value="paypal">PayPal</option>
             </select>
           )}
         />
       </div>
 
-      <Button type="submit" className="bg-asukamethod text-asukamethod-foreground hover:bg-asukamethod-hover">Book Now</Button>
+      <Button
+        type="submit"
+        className="bg-asukamethod text-asukamethod-foreground hover:bg-asukamethod-hover"
+      >
+        Book Now
+      </Button>
     </form>
   )
 }

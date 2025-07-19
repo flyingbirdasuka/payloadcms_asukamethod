@@ -139,8 +139,7 @@ export const BookingForm = () => {
           render={({ field }) => (
             <select {...field} className="w-full border rounded p-2">
               <option value="">Select payment</option>
-              <option value="ideal">iDeal</option>
-              <option value="credit-card">Credit Card</option>
+              <option value="stripe">Credit Card/iDeal</option>
               <option value="paypal">PayPal</option>
             </select>
           )}

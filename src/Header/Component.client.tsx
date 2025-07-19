@@ -36,7 +36,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               className="h-20 w-auto"
             />
           ) : (
-            <span className="text-xl font-bold">MySite</span>
+            <span className="text-xl font-bold">Asuka Method</span>
           )}
         </Link>
         <HeaderNav data={data} />

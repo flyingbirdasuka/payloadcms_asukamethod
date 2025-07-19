@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { createMeeting } from './hooks/createMeeting';
 
 export const OnlineClasses: CollectionConfig = {
   slug: 'online-classes',
@@ -26,5 +27,8 @@ export const OnlineClasses: CollectionConfig = {
       required: true,
     },
   ],
+  hooks: {
+    afterChange: [createMeeting],
+  },
 };
 

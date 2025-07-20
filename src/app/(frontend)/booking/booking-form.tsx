@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
@@ -23,9 +24,11 @@ type OnlineClass = {
 }
 
 export const BookingForm = () => {
-  const { handleSubmit, control, register, setValue, watch } = useForm<BookingFormInputs>()
+  const { handleSubmit, control, register, setValue, watch, formState: { errors } } = useForm<BookingFormInputs>()
+
   const [classes, setClasses] = useState<OnlineClass[]>([])
   const [selectedDays, setSelectedDays] = useState<Date[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -48,6 +51,7 @@ export const BookingForm = () => {
       },
     })
     console.log("submitted", data)
+    router.push('/thank-you')  // redirect after success
   }  
   
   // classes per selected day
@@ -119,7 +123,7 @@ export const BookingForm = () => {
                             const newIds = e.target.checked
                               ? [...selectedClassIds, cls.id]
                               : selectedClassIds.filter((id) => id !== cls.id)
-                            setValue('selectedDates', newIds)
+                            setValue('selectedDates', newIds, { shouldValidate: true })
                           }}
                         />
                         {format(parseISO(cls.date), 'HH:mm')} —{' '}
@@ -131,6 +135,15 @@ export const BookingForm = () => {
                 </div>
               )
             })}
+            <input
+              type="hidden"
+              {...register('selectedDates', {
+                validate: value => (value && value.length > 0) || 'Please select at least one class.'
+              })}
+            />
+            {errors.selectedDates && (
+              <p className="text-red-500 text-sm">{errors.selectedDates.message}</p>
+            )}
           </div>
         )}
       </div>

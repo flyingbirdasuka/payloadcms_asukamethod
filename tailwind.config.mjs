@@ -98,6 +98,9 @@ const config = {
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
       },
+      ringColor: {
+        ring: 'hsl(280, 65%, 35%)', // this will be used when `ring` is referenced
+      },
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],

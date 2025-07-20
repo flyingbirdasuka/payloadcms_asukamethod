@@ -68,29 +68,31 @@ export const BookingForm = () => {
       <div className='flex justify-evenly'>
         <div>
           <label>Choose class date(s)</label>
-          <DayPicker
-            mode="multiple"
-            selected={selectedDays}
-            onSelect={(days) => {
-              if (!days) return
-              const newSelected = Array.isArray(days) ? days : [days]
-              setSelectedDays(newSelected)
+          <div className="booking-theme">
+            <DayPicker
+              mode="multiple"
+              selected={selectedDays}
+              onSelect={(days) => {
+                if (!days) return
+                const newSelected = Array.isArray(days) ? days : [days]
+                setSelectedDays(newSelected)
 
-              // Clear previously selected class times that no longer match selected days
-              const validClassIds = classes
-                .filter(cls =>
-                  newSelected.some(day =>
-                    isSameDay(parseISO(cls.date), day)
+                // Clear previously selected class times that no longer match selected days
+                const validClassIds = classes
+                  .filter(cls =>
+                    newSelected.some(day =>
+                      isSameDay(parseISO(cls.date), day)
+                    )
                   )
-                )
-                .map(c => c.id)
-              const filteredSelected = selectedClassIds.filter(id => validClassIds.includes(id))
-              setValue('selectedDates', filteredSelected)
-            }}
-            disabled={(date) =>
-              !classes.some(cls => isSameDay(parseISO(cls.date), date))
-            }
-          />
+                  .map(c => c.id)
+                const filteredSelected = selectedClassIds.filter(id => validClassIds.includes(id))
+                setValue('selectedDates', filteredSelected)
+              }}
+              disabled={(date) =>
+                !classes.some(cls => isSameDay(parseISO(cls.date), date))
+              }
+            />
+          </div>
         </div>
 
         {selectedDays.length > 0 && (
@@ -105,7 +107,7 @@ export const BookingForm = () => {
               if (dayClasses.length === 0) return null
               console.log(dayClasses)
               return (
-                <div key={day.toISOString()}>
+                <div key={day.toISOString()} className='selected-date'>
                   <h3 className="font-semibold">
                     {format(day, 'PPPP')}:
                   </h3>
@@ -164,7 +166,8 @@ export const BookingForm = () => {
           name="paymentMethod"
           rules={{ required: true }}
           render={({ field }) => (
-            <select {...field} className="w-full border rounded p-2">
+            <select {...field} className="w-full border rounded p-2 bg-background text-foreground border-border 
+             focus:outline-none focus:ring-2 focus:ring-asukamethod-hover">
               <option value="">Select payment</option>
               <option value="stripe">Credit Card / iDeal</option>
               <option value="paypal">PayPal</option>

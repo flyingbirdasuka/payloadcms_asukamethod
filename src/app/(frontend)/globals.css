@@ -108,3 +108,30 @@ html[data-theme='light'] {
   --asukamethod-foreground: 0 0% 100%;
   --asukamethod-hover: 280 65% 35%;
 }
+
+/* BOOKING FORM */
+
+/* Customize navigation buttons (arrows) */
+.booking-theme .rdp-nav button .rdp-chevron{
+  fill: hsl(var(--asukamethod));
+}
+
+/* Customize navigation buttons (arrows) hover */
+.booking-theme .rdp-nav button .rdp-chevron:hover{
+  fill: hsl(var(--asukamethod-hover));
+}
+
+/* Customize buttons */
+.booking-theme button.rdp-day_button{
+  color: hsl(var(--asukamethod-hover));
+}
+
+/* Customize selected buttons circle */
+.rdp-day.rdp-selected button.rdp-day_button{
+  border-color: hsl(var(--asukamethod-hover));
+}
+
+/* Customize text color for the month and selected dates */
+.booking-theme .rdp-caption_label, .selected-date {
+  color: hsl(var(--asukamethod))
+}

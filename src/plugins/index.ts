@@ -13,6 +13,8 @@ import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
+
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
@@ -78,6 +80,31 @@ export const plugins: Plugin[] = [
           }
           return field
         })
+      },
+    },
+    // Send a notification email via automation
+    formSubmissionOverrides: {
+      hooks: {
+        afterChange: [
+          async ({ doc }) => {
+            try {
+              const webhookURL = process.env.WEBHOOK_AUTOMATION_CONTACT_NOTIFICATION
+
+              if (!webhookURL) {
+                console.warn('Webhook URL not defined in env')
+                return
+              }
+
+              await fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(doc),
+              })
+            } catch (err) {
+              console.error('Webhook call failed:', err)
+            }
+          },
+        ],
       },
     },
   }),

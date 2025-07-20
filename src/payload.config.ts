@@ -24,6 +24,7 @@ import { Tags } from './collections/Tags'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+
 export default buildConfig({
   admin: {
     components: {
@@ -92,5 +93,5 @@ export default buildConfig({
     },
     tasks: [],
   },
-  telemetry: false
+  telemetry: false,
 })

@@ -40,7 +40,7 @@ export default function VideoGalleryPage() {
 
   return (
     <div className="p-6">
-      <div className="mb-4 space-x-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         <button onClick={() => setSelectedTag(null)} className="px-4 py-1 rounded bg-gray-200">
           All
         </button>

@@ -33,7 +33,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             <img
               src={data.logo.url ?? undefined}
               alt={data.logo.alt || 'Logo'}
-              className="h-20 w-auto"
+              className="h-16 sm:h-20 w-auto max-w-[160px] object-contain"
             />
           ) : (
             <span className="text-xl font-bold">Asuka Method</span>

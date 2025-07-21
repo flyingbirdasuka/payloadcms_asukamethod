@@ -25,7 +25,7 @@ export const Text: React.FC<
           </span>
         )}
       </Label>
-      <Input defaultValue={defaultValue} id={name} type="text" {...register(name, { required })} />
+      <Input defaultValue={defaultValue} id={name} type="text" {...register(name, { required, minLength: { value: 2, message: 'Name must be at least 2 characters'} })} />
       {errors[name] && <Error name={name} />}
     </Width>
   )

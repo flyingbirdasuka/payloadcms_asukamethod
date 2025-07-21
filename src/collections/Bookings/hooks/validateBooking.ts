@@ -7,7 +7,7 @@ export const validateBooking: CollectionBeforeChangeHook = async ({ data, req })
   }
 
   // Validate email format
-  const emailRegex = /^[^@]+@[^@]+\.[^@]+$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!data.email || !emailRegex.test(data.email)) {
     throw new Error('Invalid email address.')
   }

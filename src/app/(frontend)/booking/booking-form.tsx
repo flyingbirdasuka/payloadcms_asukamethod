@@ -190,12 +190,12 @@ export const BookingForm = () => {
         {/* The rest of your form fields below remain unchanged */}
         <div>
           <label>Name</label>
-          <Input {...register('name', { required: true,minLength: { value: 2, message: 'Name must be at least 2 characters'}})} />
+          <Input {...register('name', { required: true, minLength: { value: 2, message: 'Name must be at least 2 characters'}})} />
         </div>
 
         <div>
           <label>Email</label>
-          <Input {...register('email', { required: true,   pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: 'Invalid email format'}})} type="email" />
+          <Input {...register('email', { required: true,   pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email format'}})} type="email" />
         </div>
 
         <div>

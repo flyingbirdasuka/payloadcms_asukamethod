@@ -28,6 +28,7 @@ export const BookingForm = () => {
 
   const [classes, setClasses] = useState<OnlineClass[]>([])
   const [selectedDays, setSelectedDays] = useState<Date[]>([])
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -43,15 +44,31 @@ export const BookingForm = () => {
 
   const onSubmit = async (data: BookingFormInputs) => {
 
-    await fetch(`${getClientSideURL()}/api/bookings`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    console.log("submitted", data)
-    router.push('/thank-you')  // redirect after success
+    try {
+      const res = await fetch(`${getClientSideURL()}/api/bookings`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData?.message || 'Something went wrong.')
+      }
+  
+      // success
+      console.log('Booking submitted successfully');
+      router.push('/thank-you');
+  
+    } catch (error) {
+      let message = 'Booking failed. Please try again.'
+      if (error instanceof Error) {
+        message = error.message
+      }
+      setSubmitError(message)
+    }
   }  
   
   // classes per selected day
@@ -173,12 +190,12 @@ export const BookingForm = () => {
         {/* The rest of your form fields below remain unchanged */}
         <div>
           <label>Name</label>
-          <Input {...register('name', { required: true })} />
+          <Input {...register('name', { required: true,minLength: { value: 2, message: 'Name must be at least 2 characters'}})} />
         </div>
 
         <div>
           <label>Email</label>
-          <Input {...register('email', { required: true })} type="email" />
+          <Input {...register('email', { required: true,   pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: 'Invalid email format'}})} type="email" />
         </div>
 
         <div>
@@ -200,7 +217,11 @@ export const BookingForm = () => {
             )}
           />
         </div>
-
+        {submitError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+            {submitError}
+          </div>
+        )}
         <Button
           type="submit"
           className="bg-asukamethod text-asukamethod-foreground hover:bg-asukamethod-hover"

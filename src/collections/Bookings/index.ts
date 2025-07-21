@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { sortOrder } from './hooks/sortOrder';
 import { submitBooking } from './hooks/submitBooking';
+import { validateBooking } from './hooks/validateBooking';
 
 export const Bookings: CollectionConfig = {
   slug: 'bookings',
@@ -43,7 +44,7 @@ export const Bookings: CollectionConfig = {
     }
   ],
   hooks: {
-    afterChange: [submitBooking],
-    // beforeChange: [sortOrder],
+    beforeChange: [validateBooking],
+    afterChange: [submitBooking]
   },
 };

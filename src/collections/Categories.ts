@@ -7,10 +7,10 @@ import { slugField } from '@/fields/slug'
 export const Categories: CollectionConfig = {
   slug: 'categories',
   access: {
-    create: authenticated,
-    delete: authenticated,
     read: anyone,
+    create: authenticated,
     update: authenticated,
+    delete: authenticated,
   },
   admin: {
     useAsTitle: 'title',

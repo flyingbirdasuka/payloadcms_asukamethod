@@ -1,9 +1,14 @@
 import { CollectionConfig } from 'payload'
+import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 
 export const Videos: CollectionConfig = {
   slug: 'videos',
   access: {
-    read: () => true,
+    read: anyone,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated
   },
   admin: {
     useAsTitle: 'title',

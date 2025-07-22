@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 import { sortOrder } from './hooks/sortOrder';
 import { submitBooking } from './hooks/submitBooking';
 import { validateBooking } from './hooks/validateBooking';
+import { anyone } from '@/access/anyone';
+import { authenticated } from '@/access/authenticated';
 
 export const Bookings: CollectionConfig = {
   slug: 'bookings',
@@ -9,9 +11,10 @@ export const Bookings: CollectionConfig = {
     useAsTitle: 'email',
   },
   access: {
-    read: () => true,
-    create:()=> true,
+    read: anyone, // to be able to book from the website
+    create: anyone, // to be able to book from the website
     update: ({ req }) => req.user?.role === 'admin',
+    delete: ({ req }) => req.user?.role === 'admin'
   },
   fields: [
     {

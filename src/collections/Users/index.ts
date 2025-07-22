@@ -1,22 +1,33 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
+import type { PayloadRequest, Access, AccessArgs } from 'payload';
+
+
+const isAdminOrSelf: Access = (
+  args: AccessArgs,
+  id?: string,
+  _data?: unknown,
+  _context?: unknown
+) => {
+  const { req } = args;
+  return req.user?.role === 'admin' || req.user?.id === id;
+};
+
+
+const isAdmin = ({ req }: { req: PayloadRequest }): boolean => {
+  return req.user?.role === 'admin';
+};
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  // access: {
-  //   admin: authenticated,
-  //   create: authenticated,
-  //   delete: authenticated,
-  //   read: authenticated,
-  //   update: authenticated,
-  // },
+
   access: {
-    admin: ({ req }) => req.user?.role === 'admin',
-    create: () => true,
-    read: ({ req }) => req.user?.role === 'admin' || req.user?.id === req.id,
-    update: ({ req }) => req.user?.role === 'admin' || req.user?.id === req.id,
-    delete: ({ req }) => req.user?.role === 'admin',
+    admin: isAdmin,
+    create: authenticated,
+    read: isAdminOrSelf,
+    update: isAdminOrSelf,
+    delete: isAdmin,
   },
   admin: {
     defaultColumns: ['name', 'email'],

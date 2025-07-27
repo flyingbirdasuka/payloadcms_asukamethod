@@ -7,7 +7,7 @@ import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { format, parseISO, isSameDay } from 'date-fns'
+import { format, parseISO, isAfter, isSameDay, startOfDay } from 'date-fns'
 import { getClientSideURL } from '@/utilities/getURL'
 
 type BookingFormInputs = {
@@ -35,7 +35,13 @@ export const BookingForm = () => {
     const fetchClasses = async () => {
       const res = await fetch('/api/online-classes')
       const data = await res.json()
-      setClasses(data.docs || [])
+      // Filter out past classes (keep only today or future)
+      const today = startOfDay(new Date())
+      const upcomingClasses = (data.docs || []).filter((cls: OnlineClass)=> {
+      const classDate = startOfDay(parseISO(cls.date))
+      return isSameDay(classDate, today) || isAfter(classDate, today)
+    })
+      setClasses(upcomingClasses || [])
     }
 
     fetchClasses()

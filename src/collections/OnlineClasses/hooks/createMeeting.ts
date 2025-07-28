@@ -41,7 +41,8 @@ export const createMeeting: CollectionAfterChangeHook = async ({ doc, req }) => 
 
     //  Create a Teams Meeting
     const start = new Date(doc.date);
-    const end = new Date(`start.getTime() + ${process.env.CLASS_DURATION} * 60 * 1000`);
+    const durationMinutes = parseInt(process.env.CLASS_DURATION || '60', 10);
+    const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
 
     const eventBody = {
         subject: doc.classTitle,

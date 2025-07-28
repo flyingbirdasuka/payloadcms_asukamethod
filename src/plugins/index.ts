@@ -17,7 +17,7 @@ import type { CollectionConfig, CollectionAfterChangeHook } from 'payload'
 
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  return doc?.title ? `${doc.title} | Asuka Method` : 'Asuka Method'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {

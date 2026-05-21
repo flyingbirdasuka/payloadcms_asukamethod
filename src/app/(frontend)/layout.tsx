@@ -4,6 +4,7 @@ import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import React from 'react'
+import Script from 'next/script'
 
 import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/Footer/Component'
@@ -38,6 +39,14 @@ export default async function RootLayout({ children }: { children?: React.ReactN
           {children}
           <Footer />
         </Providers>
+        {/* Mailchimp popup */}
+        <Script
+          id="mcjs"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/856211006bffaf245aa55d7db/a9051ff9180e2ee7805bd79dc.js");`,
+          }}
+        />
       </body>
     </html>
   )

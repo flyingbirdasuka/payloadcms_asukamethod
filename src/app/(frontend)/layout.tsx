@@ -26,6 +26,14 @@ export default async function RootLayout({ children }: { children?: React.ReactN
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* Mailchimp popup */}
+        <Script
+          id="mcjs"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/856211006bffaf245aa55d7db/a4d04f37c7be8ec2adebab847.js");`,
+          }}
+        />
       </head>
       <body>
         <Providers>
@@ -39,14 +47,6 @@ export default async function RootLayout({ children }: { children?: React.ReactN
           {children}
           <Footer />
         </Providers>
-        {/* Mailchimp popup */}
-        <Script
-          id="mcjs"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/856211006bffaf245aa55d7db/a4d04f37c7be8ec2adebab847.js");`,
-          }}
-        />
       </body>
     </html>
   )

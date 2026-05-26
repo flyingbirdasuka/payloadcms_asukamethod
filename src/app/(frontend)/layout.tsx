@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: { children?: React.ReactN
           id="mcjs"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/856211006bffaf245aa55d7db/a9051ff9180e2ee7805bd79dc.js");`,
+            __html: `!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/856211006bffaf245aa55d7db/a4d04f37c7be8ec2adebab847.js");`,
           }}
         />
       </body>

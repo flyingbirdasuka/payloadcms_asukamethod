@@ -14,25 +14,6 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: { slug: true },
-  })
-
-  const params: { lang: string; slug: string }[] = []
-  for (const locale of ['en', 'ja']) {
-    for (const doc of pages.docs.filter((doc) => doc.slug !== 'home')) {
-      params.push({ lang: locale, slug: doc.slug as string })
-    }
-  }
-  return params
-}
 
 type Args = {
   params: Promise<{ slug?: string; lang: string }>

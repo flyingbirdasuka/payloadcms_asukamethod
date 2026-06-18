@@ -60,13 +60,14 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,
- ssl: cert ? {
+      ssl: cert ? {
         ca: cert,
         rejectUnauthorized: true,
-      } :      (process.env.DATABASE_SSL === 'true' ? true : false), 
+      } : (process.env.DATABASE_SSL === 'true' ? true : false),
       max: 3,
     },
     schemaName: process.env.DATABASE_SCHEMA,
+    push: process.env.NODE_ENV !== 'production',
   }),
   collections: [Pages, Posts, Media, Categories, Users, OnlineClasses, Bookings, Videos, Tags],
   cors: [getServerSideURL()].filter(Boolean),

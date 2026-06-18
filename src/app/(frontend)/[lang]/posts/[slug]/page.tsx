@@ -23,43 +23,36 @@ export async function generateStaticParams() {
     limit: 1000,
     overrideAccess: false,
     pagination: false,
-    select: {
-      slug: true,
-    },
+    select: { slug: true },
   })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
-
+  const params: { lang: string; slug: string }[] = []
+  for (const locale of ['en', 'ja']) {
+    for (const doc of posts.docs) {
+      params.push({ lang: locale, slug: doc.slug as string })
+    }
+  }
   return params
 }
 
 type Args = {
-  params: Promise<{
-    slug?: string
-  }>
+  params: Promise<{ slug?: string; lang: string }>
 }
 
 export default async function Post({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = '' } = await paramsPromise
-  const url = '/posts/' + slug
-  const post = await queryPostBySlug({ slug })
+  const { slug = '', lang } = await paramsPromise
+  const url = lang === 'en' ? '/posts/' + slug : '/' + lang + '/posts/' + slug
+  const post = await queryPostBySlug({ slug, locale: lang })
 
   if (!post) return <PayloadRedirects url={url} />
 
   return (
     <article className="pt-16 pb-16">
       <PageClient />
-
-      {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
-
       {draft && <LivePreviewListener />}
-
       <PostHero post={post} />
-
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
           <RichText className="max-w-[48rem] mx-auto" data={post.content as any} enableGutter={false} />
@@ -76,15 +69,13 @@ export default async function Post({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = '' } = await paramsPromise
-  const post = await queryPostBySlug({ slug })
-
+  const { slug = '', lang } = await paramsPromise
+  const post = await queryPostBySlug({ slug, locale: lang })
   return generateMeta({ doc: post })
 }
 
-const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale: string }) => {
   const { isEnabled: draft } = await draftMode()
-
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
@@ -93,11 +84,8 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
     limit: 1,
     overrideAccess: draft,
     pagination: false,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
+    locale: locale as 'en' | 'ja',
+    where: { slug: { equals: slug } },
   })
 
   return result.docs?.[0] || null

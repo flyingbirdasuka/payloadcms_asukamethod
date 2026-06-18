@@ -13,6 +13,11 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
+  const isJapanese = pathname.startsWith('/ja')
+  const localePrefix = isJapanese ? '/ja' : ''
+  const switcherHref = isJapanese ? pathname.replace(/^\/ja/, '') || '/' : `/ja${pathname}`
+  const switcherLabel = isJapanese ? 'EN' : '日本語'
+
   // Close mobile menu on route change
   useEffect(() => {
     setOpen(false)
@@ -38,7 +43,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
       {/* Nav items - hidden on mobile unless open */}
       <nav
         className={`gap-3 items-center ${
-          open ? 'flex flex-col space-y-4 mt-4' : 'hidden sm:flex'
+          open ? 'flex flex-col space-y-4 mt-4' : 'hidden sm:flex sm:flex-row'
         }`}
       >
         {navItems.map(({ link }, i) => (
@@ -50,14 +55,18 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             <CMSLink
               {...link}
               appearance="link"
+              localePrefix={localePrefix}
               className="text-asukamethod hover:text-asukamethod-hover block px-3 py-1 rounded"
             />
           </div>
         ))}
-        {/* Uncomment if you want the search icon */}
-        {/* <Link href="/search">
-          <span className="sr-only">Search</span>
-        </Link> */}
+        <Link
+          href={switcherHref}
+          className="shrink-0 text-asukamethod hover:text-asukamethod-hover px-3 py-1 rounded border border-current text-sm font-medium"
+          onClick={() => setOpen(false)}
+        >
+          {switcherLabel}
+        </Link>
       </nav>
     </>
   )

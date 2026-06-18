@@ -43,6 +43,7 @@ export const Pages: CollectionConfig<'pages'> = {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
           collection: 'pages',
+          locale: (req.locale as string) || 'en',
           req,
         })
 
@@ -53,6 +54,7 @@ export const Pages: CollectionConfig<'pages'> = {
       generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
         collection: 'pages',
+        locale: (req.locale as string) || 'en',
         req,
       }),
     useAsTitle: 'title',
@@ -62,6 +64,7 @@ export const Pages: CollectionConfig<'pages'> = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       type: 'tabs',

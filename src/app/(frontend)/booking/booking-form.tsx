@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { format, parseISO, isAfter, isSameDay, startOfDay } from 'date-fns'
 import { getClientSideURL } from '@/utilities/getURL'
+import type { BookingLabels } from '@/app/(frontend)/[lang]/booking/page'
 
 type BookingFormInputs = {
   name: string
@@ -23,7 +24,26 @@ type OnlineClass = {
   classTitle?: string
 }
 
-export const BookingForm = () => {
+const defaultLabels: BookingLabels = {
+  title: 'Book Your Class',
+  price: 'Price per class €10',
+  stepDate: '1. Choose class date(s)',
+  stepTime: '2. Select class times',
+  untitledClass: 'Untitled Class',
+  name: 'Name',
+  namePlaceholder: 'Your name',
+  nameError: 'Name must be at least 2 characters',
+  email: 'Email',
+  emailError: 'Invalid email format',
+  paymentMethod: 'Payment Method',
+  selectPayment: 'Select payment',
+  creditCard: 'Credit Card / iDeal',
+  paypal: 'PayPal',
+  selectClassError: 'Please select at least one class.',
+  bookNow: 'Book Now',
+}
+
+export const BookingForm = ({ locale = 'en', labels = defaultLabels }: { locale?: string; labels?: BookingLabels }) => {
   const { handleSubmit, control, register, setValue, watch, formState: { errors } } = useForm<BookingFormInputs>()
 
   const [classes, setClasses] = useState<OnlineClass[]>([])
@@ -33,7 +53,7 @@ export const BookingForm = () => {
 
   useEffect(() => {
     const fetchClasses = async () => {
-      const res = await fetch('/api/online-classes')
+      const res = await fetch(`/api/online-classes?locale=${locale}`)
       const data = await res.json()
       // Filter out past classes (keep only today or future)
       const today = startOfDay(new Date())
@@ -45,7 +65,7 @@ export const BookingForm = () => {
     }
 
     fetchClasses()
-  }, [])
+  }, [locale])
 
 
   const onSubmit = async (data: BookingFormInputs) => {
@@ -93,7 +113,7 @@ export const BookingForm = () => {
         <div className="flex flex-col gap-6">
           {/* Date Picker Section */}
           <div>
-            <h2 className="text-lg font-semibold mb-2">1. Choose class date(s)</h2>
+            <h2 className="text-lg font-semibold mb-2">{labels.stepDate}</h2>
             <div className="booking-theme">
               <DayPicker
                 mode="multiple"
@@ -126,7 +146,7 @@ export const BookingForm = () => {
           {/* Class Time Options */}
           {selectedDays.length > 0 && (
             <div className="space-y-4 border-t border-border pt-4">
-              <h2 className="text-lg font-semibold mb-2">2. Select class times</h2>
+              <h2 className="text-lg font-semibold mb-2">{labels.stepTime}</h2>
               {selectedDays
                 .slice()
                 .sort((a, b) => a.getTime() - b.getTime())
@@ -164,7 +184,7 @@ export const BookingForm = () => {
                                 {format(parseISO(cls.date), 'HH:mm')} —{' '}
                                 {cls.classTitle?.trim() || (
                                   <span className="italic text-gray-500">
-                                    Untitled Class
+                                    {labels.untitledClass}
                                   </span>
                                 )}
                               </label>
@@ -181,7 +201,7 @@ export const BookingForm = () => {
                 {...register('selectedDates', {
                   validate: value =>
                     (value && value.length > 0) ||
-                    'Please select at least one class.',
+                    labels.selectClassError,
                 })}
               />
               {errors.selectedDates && (
@@ -195,17 +215,17 @@ export const BookingForm = () => {
 
         {/* The rest of your form fields below remain unchanged */}
         <div>
-          <label>Name</label>
-          <Input {...register('name', { required: true, minLength: { value: 2, message: 'Name must be at least 2 characters'}})} />
+          <label>{labels.name}</label>
+          <Input {...register('name', { required: true, minLength: { value: 2, message: labels.nameError }})} placeholder={labels.namePlaceholder} />
         </div>
 
         <div>
-          <label>Email</label>
-          <Input {...register('email', { required: true,   pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email format'}})} type="email" />
+          <label>{labels.email}</label>
+          <Input {...register('email', { required: true, pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: labels.emailError }})} type="email" />
         </div>
 
         <div>
-          <label>Payment Method</label>
+          <label>{labels.paymentMethod}</label>
           <Controller
             control={control}
             name="paymentMethod"
@@ -216,9 +236,9 @@ export const BookingForm = () => {
                 className="w-full border rounded p-2 bg-background text-foreground border-border
                 focus:outline-none focus:ring-2 focus:ring-asukamethod-hover"
               >
-                <option value="">Select payment</option>
-                <option value="stripe">Credit Card / iDeal</option>
-                <option value="paypal">PayPal</option>
+                <option value="">{labels.selectPayment}</option>
+                <option value="stripe">{labels.creditCard}</option>
+                <option value="paypal">{labels.paypal}</option>
               </select>
             )}
           />
@@ -232,7 +252,7 @@ export const BookingForm = () => {
           type="submit"
           className="bg-asukamethod text-asukamethod-foreground hover:bg-asukamethod-hover"
         >
-          Book Now
+          {labels.bookNow}
         </Button>
       </form>
     </div>

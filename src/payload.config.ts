@@ -25,7 +25,7 @@ import { Tags } from './collections/Tags'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const certPath = process.env.CERT_PATH || ''
-const cert = fs.readFileSync(certPath).toString()
+const cert = certPath ? fs.readFileSync(certPath).toString() : ''
 
 export default buildConfig({
   routes: {
@@ -60,10 +60,11 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,
-      ssl: cert ? {
+ ssl: cert ? {
         ca: cert,
         rejectUnauthorized: true,
-      } : (process.env.DATABASE_SSL === 'true' ? true : false), 
+      } :      (process.env.DATABASE_SSL === 'true' ? true : false), 
+      max: 3,
     },
     schemaName: process.env.DATABASE_SCHEMA,
   }),
@@ -90,4 +91,8 @@ export default buildConfig({
     tasks: [],
   },
   telemetry: false,
+  localization: {
+    locales: ['en', 'ja'],
+    defaultLocale: 'en',
+  }
 })

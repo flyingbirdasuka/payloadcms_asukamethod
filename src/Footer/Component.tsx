@@ -1,4 +1,5 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import React from 'react'
 
@@ -8,7 +9,9 @@ import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 
 export async function Footer() {
-  const footerData: Footer = await getCachedGlobal('footer', 1)()
+  const headersList = await headers()
+  const locale = headersList.get('x-locale') || 'en'
+  const footerData: Footer = await getCachedGlobal('footer', 1, locale)()
 
 
   const navItems = footerData?.navItems || []

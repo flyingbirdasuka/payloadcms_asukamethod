@@ -10,6 +10,7 @@ type CMSLinkType = {
   children?: React.ReactNode
   className?: string
   label?: string | null
+  localePrefix?: string
   newTab?: boolean | null
   reference?: {
     relationTo: 'pages' | 'posts'
@@ -27,18 +28,22 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     children,
     className,
     label,
+    localePrefix = '',
     newTab,
     reference,
     size: sizeFromProps,
     url,
   } = props
 
-  const href =
+  const baseHref =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
       ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
           reference.value.slug
         }`
       : url
+
+  const isAbsolute = baseHref?.startsWith('http://') || baseHref?.startsWith('https://')
+  const href = baseHref ? (isAbsolute ? baseHref : `${localePrefix}${baseHref}`) : baseHref
 
   if (!href) return null
 

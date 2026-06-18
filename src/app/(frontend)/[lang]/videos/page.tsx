@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import { getClientSideURL } from '@/utilities/getURL'
 
 type Video = {
@@ -11,20 +12,19 @@ type Video = {
 }
 
 export default function VideoGalleryPage() {
+  const params = useParams()
+  const lang = (params?.lang as string) || 'en'
   const [videos, setVideos] = useState<Video[]>([])
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchVideos = async () => {
-        console.log('triggered')
-      const res = await fetch(`${getClientSideURL()}/api/videos?depth=1`)
+      const res = await fetch(`${getClientSideURL()}/api/videos?depth=1&locale=${lang}`)
       const json = await res.json()
-      console.log('test',json.docs)
       setVideos(json.docs)
     }
-
     fetchVideos()
-  }, [])
+  }, [lang])
 
   const filteredVideos = selectedTag
     ? videos.filter((video) => video.tags?.some((tag) => tag.id === selectedTag))
@@ -45,15 +45,15 @@ export default function VideoGalleryPage() {
           All
         </button>
         {allTags.map((tag) => (
-        <button
+          <button
             key={tag.id}
             onClick={() => setSelectedTag(tag.id)}
             className={`px-4 py-1 rounded ${
-            selectedTag === tag.id ? 'bg-purple-500 text-white' : 'bg-gray-100'
+              selectedTag === tag.id ? 'bg-purple-500 text-white' : 'bg-gray-100'
             }`}
-        >
+          >
             {tag.name}
-        </button>
+          </button>
         ))}
       </div>
 

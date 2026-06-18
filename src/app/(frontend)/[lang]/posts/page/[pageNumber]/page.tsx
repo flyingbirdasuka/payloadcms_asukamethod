@@ -12,17 +12,14 @@ import { notFound } from 'next/navigation'
 export const revalidate = 600
 
 type Args = {
-  params: Promise<{
-    pageNumber: string
-  }>
+  params: Promise<{ pageNumber: string; lang: string }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, lang } = await paramsPromise
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
-
   if (!Number.isInteger(sanitizedPageNumber)) notFound()
 
   const posts = await payload.find({
@@ -31,6 +28,7 @@ export default async function Page({ params: paramsPromise }: Args) {
     limit: 12,
     page: sanitizedPageNumber,
     overrideAccess: false,
+    locale: lang as 'en' | 'ja',
   })
 
   return (
@@ -77,12 +75,13 @@ export async function generateStaticParams() {
   })
 
   const totalPages = Math.ceil(totalDocs / 10)
+  const params: { lang: string; pageNumber: string }[] = []
 
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
+  for (const locale of ['en', 'ja']) {
+    for (let i = 1; i <= totalPages; i++) {
+      params.push({ lang: locale, pageNumber: String(i) })
+    }
   }
 
-  return pages
+  return params
 }

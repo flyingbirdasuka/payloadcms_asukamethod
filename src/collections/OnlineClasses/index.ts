@@ -30,6 +30,7 @@ export const OnlineClasses: CollectionConfig = {
       name: 'classTitle',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'teamsMeetingLink',

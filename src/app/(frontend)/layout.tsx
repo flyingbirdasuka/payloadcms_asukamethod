@@ -19,7 +19,7 @@ export default async function RootLayout({ children }: { children?: React.ReactN
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link href="/favicon.png" rel="icon" type="image/png" sizes="500x500" />
         <Script
           id="mcjs"
           strategy="beforeInteractive"
@@ -42,6 +42,5 @@ export const metadata: Metadata = {
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
   },
 }

@@ -21,13 +21,11 @@ export const Bookings: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
-      localized: true,
     },
     {
       name: 'email',
       type: 'email',
       required: true,
-      localized: true,
     },
     {
       name: 'selectedDates',
@@ -40,14 +38,12 @@ export const Bookings: CollectionConfig = {
       name: 'paymentMethod',
       type: 'text',
       required: true,
-      localized: true,
     },
     {
       name: 'status',
       type: 'text',
       required: true,
       defaultValue: 'pending',
-      localized: true,
     }
   ],
   hooks: {

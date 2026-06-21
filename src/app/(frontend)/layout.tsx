@@ -6,6 +6,8 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 import Script from 'next/script'
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -20,6 +22,17 @@ export default async function RootLayout({ children }: { children?: React.ReactN
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.png" rel="icon" type="image/png" sizes="500x500" />
+        {GA_ID && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <Script id="google-analytics" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_ID}');
+            `}} />
+          </>
+        )}
         <Script
           id="mcjs"
           strategy="beforeInteractive"
